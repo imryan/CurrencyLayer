@@ -40,8 +40,6 @@ struct Live: ParsableCommand {
     private var currencies: String?
     
     func run() throws {
-        print("Running `live` command...")
-        
         var parameters: [String: Any] = [:]
         if let source = source {
             parameters["source"] = source
@@ -85,8 +83,6 @@ struct Historical: ParsableCommand {
     private var currencies: String?
     
     func run() throws {
-        print("Ran `historical` command.")
-        
         var parameters: [String: Any] = ["date": date]
         if let source = source {
             parameters["source"] = source
@@ -133,8 +129,6 @@ struct Convert: ParsableCommand {
     private var date: String?
     
     func run() throws {
-        print("Ran `convert` command.")
-        
         var parameters: [String: Any] = [
             "from": from,
             "to": to,
@@ -178,8 +172,6 @@ struct Timeframe: ParsableCommand {
     private var currencies: String?
     
     func run() throws {
-        print("Ran `timeframe` command.")
-        
         var parameters: [String: Any] = [
             "start_date": startDate,
             "end_date": endDate
@@ -228,8 +220,6 @@ struct Change: ParsableCommand {
     private var currencies: String?
     
     func run() throws {
-        print("Ran `change` command.")
-        
         var parameters: [String: Any] = [
             "start_date": startDate,
             "end_date": endDate
