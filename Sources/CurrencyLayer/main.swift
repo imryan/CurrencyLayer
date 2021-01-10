@@ -1,6 +1,8 @@
 import Foundation
 import ArgumentParser
 
+// MARK: - Setup -
+
 /// Networking helper
 let networking: Networking?
 if let apiKey = UserDefaults.standard.string(forKey: "kCurrencyLayerAPIKey") {
@@ -26,6 +28,8 @@ var isDone: Bool = false {
     }
 }
 
+// MARK: - CurrencyLayer -
+
 struct CurrencyLayer: ParsableCommand {
     
     // MARK: - CommandConfiguration -
@@ -42,6 +46,8 @@ struct CurrencyLayer: ParsableCommand {
     }
 }
 
+// MARK: - Key -
+
 struct Key: ParsableCommand {
     
     public static let configuration: CommandConfiguration = .init(abstract: "Use this command to set your CurrencyLayer API key.")
@@ -55,6 +61,8 @@ struct Key: ParsableCommand {
         isDone = true
     }
 }
+
+// MARK: - Live -
 
 struct Live: ParsableCommand {
     
@@ -95,6 +103,8 @@ struct Live: ParsableCommand {
         }
     }
 }
+
+// MARK: - Historical -
 
 struct Historical: ParsableCommand {
     
@@ -139,6 +149,8 @@ struct Historical: ParsableCommand {
     }
 }
 
+// MARK: - Convert -
+
 struct Convert: ParsableCommand {
     
     public static let configuration: CommandConfiguration = .init(abstract: "Convert any amount from one currency to another using real-time exchange rates.")
@@ -181,6 +193,8 @@ struct Convert: ParsableCommand {
         }
     }
 }
+
+// MARK: - Timeframe -
 
 struct Timeframe: ParsableCommand {
     
@@ -229,6 +243,8 @@ struct Timeframe: ParsableCommand {
         }
     }
 }
+
+// MARK: - Change -
 
 struct Change: ParsableCommand {
     
