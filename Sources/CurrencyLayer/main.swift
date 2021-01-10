@@ -2,8 +2,21 @@ import Foundation
 import ArgumentParser
 
 /// Networking helper
-let networking: Networking = .init(apiKey: "")
-
+let networking: Networking?
+if let apiKey = UserDefaults.standard.string(forKey: "kCurrencyLayerAPIKey") {
+    networking = .init(apiKey: apiKey)
+} else {
+    print("No API key found. Please set one now:")
+    
+    if let apiKey = readLine() {
+        UserDefaults.standard.setValue(apiKey, forKey: "kCurrencyLayerAPIKey")
+        print("API key has been set successfully.")
+        networking = .init(apiKey: apiKey)
+    } else {
+        print("Failed to set API key.")
+        exit(EXIT_FAILURE)
+    }
+}
 /// Track async process
 var isDone: Bool = false {
     didSet {
@@ -19,13 +32,27 @@ struct CurrencyLayer: ParsableCommand {
     
     static let configuration: CommandConfiguration = .init(
         abstract: "A Swift command-line tool for fetching and converting live currency data.",
-        subcommands: [Live.self, Historical.self, Convert.self, Timeframe.self, Change.self]
+        subcommands: [Live.self, Historical.self, Convert.self, Timeframe.self, Change.self, Key.self]
     )
     
     // MARK: - Initialization -
     
     init() {
         /// TODO: Setup module here.
+    }
+}
+
+struct Key: ParsableCommand {
+    
+    public static let configuration: CommandConfiguration = .init(abstract: "Use this command to set your CurrencyLayer API key.")
+    
+    @Argument(help: "Your API key from CurrencyLayer.")
+    private var apiKey: String
+    
+    func run() throws {
+        UserDefaults.standard.setValue(apiKey, forKey: "kCurrencyLayerAPIKey")
+        print("API key has been set successfully.")
+        isDone = true
     }
 }
 
@@ -49,7 +76,7 @@ struct Live: ParsableCommand {
             parameters["currencies"] = currencies
         }
         
-        networking.request(.live, parameters: parameters) { (data: LiveData?, error: CurrencyLayerError?) in
+        networking?.request(.live, parameters: parameters) { (data: LiveData?, error: CurrencyLayerError?) in
             guard error == nil else {
                 print("Error: \(error?.localizedDescription ?? "No description.")")
                 isDone = true
@@ -92,7 +119,7 @@ struct Historical: ParsableCommand {
             parameters["currencies"] = currencies
         }
         
-        networking.request(.historical, parameters: parameters) { (data: LiveData?, error: CurrencyLayerError?) in
+        networking?.request(.historical, parameters: parameters) { (data: LiveData?, error: CurrencyLayerError?) in
             guard error == nil else {
                 print("Error: \(error?.localizedDescription ?? "No description.")")
                 isDone = true
@@ -139,7 +166,7 @@ struct Convert: ParsableCommand {
             parameters["date"] = date
         }
         
-        networking.request(.convert, parameters: parameters) { (data: ConversionResponse?, error: CurrencyLayerError?) in
+        networking?.request(.convert, parameters: parameters) { (data: ConversionResponse?, error: CurrencyLayerError?) in
             guard error == nil else {
                 print("Error: \(error?.localizedDescription ?? "No description.")")
                 isDone = true
@@ -185,7 +212,7 @@ struct Timeframe: ParsableCommand {
             parameters["currencies"] = currencies
         }
         
-        networking.request(.timeFrame, parameters: parameters) { (data: TimeframeResponse?, error: CurrencyLayerError?) in
+        networking?.request(.timeFrame, parameters: parameters) { (data: TimeframeResponse?, error: CurrencyLayerError?) in
             guard error == nil else {
                 print("Error: \(error?.localizedDescription ?? "No description.")")
                 isDone = true
@@ -233,7 +260,7 @@ struct Change: ParsableCommand {
             parameters["currencies"] = currencies
         }
         
-        networking.request(.change, parameters: parameters) { (data: TimeframeResponse?, error: CurrencyLayerError?) in
+        networking?.request(.change, parameters: parameters) { (data: TimeframeResponse?, error: CurrencyLayerError?) in
             guard error == nil else {
                 print("Error: \(error?.localizedDescription ?? "No description.")")
                 isDone = true
