@@ -1,4 +1,5 @@
 # 💵 CurrencyLayer
+![Swift](https://github.com/imryan/CurrencyLayer/workflows/Swift/badge.svg?branch=master)
 
 A Swift command-line tool for fetching and converting live currency data.
 
