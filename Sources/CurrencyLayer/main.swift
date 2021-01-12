@@ -19,6 +19,7 @@ if let apiKey = UserDefaults.standard.string(forKey: "kCurrencyLayerAPIKey") {
         exit(EXIT_FAILURE)
     }
 }
+
 /// Track async process
 var isDone: Bool = false {
     didSet {
@@ -84,23 +85,7 @@ struct Live: ParsableCommand {
             parameters["currencies"] = currencies
         }
         
-        networking?.request(.live, parameters: parameters) { (data: LiveData?, error: CurrencyLayerError?) in
-            guard error == nil else {
-                print("Error: \(error?.localizedDescription ?? "No description.")")
-                isDone = true
-                return
-            }
-            
-            if let source = data?.source, let quotes = data?.quotes {
-                quotes.forEach {
-                    if let destinationCurrency: String = $0.key.components(separatedBy: source).last {
-                        print("* \(source)->\(destinationCurrency) = $\($0.value)")
-                    }
-                }
-            }
-            
-            isDone = true
-        }
+        printCurrencyData(with: parameters)
     }
 }
 
@@ -129,23 +114,7 @@ struct Historical: ParsableCommand {
             parameters["currencies"] = currencies
         }
         
-        networking?.request(.historical, parameters: parameters) { (data: LiveData?, error: CurrencyLayerError?) in
-            guard error == nil else {
-                print("Error: \(error?.localizedDescription ?? "No description.")")
-                isDone = true
-                return
-            }
-            
-            if let source = data?.source, let quotes = data?.quotes {
-                quotes.forEach {
-                    if let destinationCurrency: String = $0.key.components(separatedBy: source).last {
-                        print("* \(source)->\(destinationCurrency) = $\($0.value)")
-                    }
-                }
-            }
-            
-            isDone = true
-        }
+        printCurrencyData(with: parameters)
     }
 }
 
@@ -293,6 +262,30 @@ struct Change: ParsableCommand {
         }
     }
 }
+
+// MARK: - Helpers -
+
+private func printCurrencyData(with parameters: [String: Any]) {
+    networking?.request(.live, parameters: parameters) { (data: LiveData?, error: CurrencyLayerError?) in
+        guard error == nil else {
+            print("Error: \(error?.localizedDescription ?? "No description.")")
+            isDone = true
+            return
+        }
+        
+        if let source = data?.source, let quotes = data?.quotes {
+            quotes.forEach {
+                if let destinationCurrency: String = $0.key.components(separatedBy: source).last {
+                    print("* \(source)->\(destinationCurrency) = $\($0.value)")
+                }
+            }
+        }
+        
+        isDone = true
+    }
+}
+
+// MARK: - Main -
 
 // Start it up
 CurrencyLayer.main()
