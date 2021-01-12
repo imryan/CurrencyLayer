@@ -117,7 +117,7 @@ final public class Networking {
         urlRequest.httpMethod = "GET"
         
         // Debug logging
-         print("[DEBUG] Requesting \(formattedURL.absoluteString) with \(queryItems)")
+        // print("[DEBUG] Requesting \(formattedURL.absoluteString) with \(queryItems)")
         
         URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
             guard let data = data else {
